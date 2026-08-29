@@ -43,7 +43,7 @@ const BASE_FIELDS = [
   "reach",
   "frequency",
   "actions",
-  "video_3_sec_watched_actions",
+  "video_play_actions",
   "video_p50_watched_actions",
   "video_p95_watched_actions",
 ].join(",");
