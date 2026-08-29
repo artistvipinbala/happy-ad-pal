@@ -43,7 +43,7 @@ const BASE_FIELDS = [
   "reach",
   "frequency",
   "actions",
-  "video_3_sec_watched_actions",
+  "video_play_actions",
   "video_p50_watched_actions",
   "video_p95_watched_actions",
 ].join(",");
@@ -99,7 +99,7 @@ function mapMetrics(row: Insight) {
     frequency: num(row["frequency"]),
     conversions: Math.round(conversions),
     cpr: conversions > 0 ? spend / conversions : 0,
-    three_second_views: Math.round(videoValue(row, "video_3_sec_watched_actions")),
+    three_second_views: Math.round(videoValue(row, "video_play_actions")),
     fifty_percent_views: Math.round(videoValue(row, "video_p50_watched_actions")),
     ninety_five_percent_views: Math.round(videoValue(row, "video_p95_watched_actions")),
   };
