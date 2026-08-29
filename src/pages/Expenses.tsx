@@ -15,13 +15,13 @@ import { toast } from "sonner";
 export default function Expenses() {
   const queryClient = useQueryClient();
 
-  const [saleDate, setSaleDate] = useState(new Date().toISOString().split("T")[0]);
+  const [saleDate, setSaleDate] = useState(new Date().toISOString().split("T")[0]!);
   const [saleQty, setSaleQty] = useState(1);
   const [saleAmount, setSaleAmount] = useState(0);
   const [saleGST, setSaleGST] = useState(0);
   const [saleNotes, setSaleNotes] = useState("");
 
-  const [expDate, setExpDate] = useState(new Date().toISOString().split("T")[0]);
+  const [expDate, setExpDate] = useState(new Date().toISOString().split("T")[0]!);
   const [expAmount, setExpAmount] = useState(0);
   const [expCatId, setExpCatId] = useState("");
   const [expDesc, setExpDesc] = useState("");

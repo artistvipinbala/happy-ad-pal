@@ -22,7 +22,7 @@ const PRICE_PER_SALE = 589;
 const COMMISSION_RATE = 0.025;
 
 const defaultRow = {
-  date: new Date().toISOString().split("T")[0],
+  date: new Date().toISOString().split("T")[0]!,
   ad_spend: 0, impressions: 0, clicks: 0, ctr: 0, cpl: 0, cpr: 0, cpc: 0,
   three_second_views: 0, fifty_percent_views: 0, ninety_five_percent_views: 0,
   frequency: 0, reach: 0, conversions: 0,
@@ -36,7 +36,7 @@ function dedupeBy<T extends Record<string, any>>(rows: T[], keyFn: (r: T) => str
   for (const r of rows) {
     const k = keyFn(r);
     const existing = map.get(k);
-    if (!existing || Number(r.spend) > Number(existing.spend)) map.set(k, r);
+    if (!existing || Number((r as { spend?: unknown }).spend) > Number((existing as { spend?: unknown }).spend)) map.set(k, r);
   }
   return Array.from(map.values());
 }

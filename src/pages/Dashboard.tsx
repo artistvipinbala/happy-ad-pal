@@ -61,7 +61,7 @@ export default function Dashboard() {
       const amountPerSale = price * (1 + gstRate);
       const totalAmount = amountPerSale * totalQty;
       const gstCollected = price * gstRate * totalQty;
-      const today = new Date().toISOString().split("T")[0];
+      const today = new Date().toISOString().split("T")[0]!;
 
       await supabase.from("sales_entries").delete().neq("id", "00000000-0000-0000-0000-000000000000");
 
