@@ -17,6 +17,7 @@ import { Route as AppExpensesRouteImport } from './routes/_app/expenses'
 import { Route as AppMonthlyRouteImport } from './routes/_app/monthly'
 import { Route as AppProfitRouteImport } from './routes/_app/profit'
 import { Route as AppSettingsRouteImport } from './routes/_app/settings'
+import { Route as ApiPublicCronFacebookSyncRouteImport } from './routes/api/public/cron/facebook-sync'
 
 const AppRoute = AppRouteImport.update({
   id: '/_app',
@@ -57,6 +58,12 @@ const AppSettingsRoute = AppSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AppRoute,
 } as any)
+const ApiPublicCronFacebookSyncRoute =
+  ApiPublicCronFacebookSyncRouteImport.update({
+    id: '/api/public/cron/facebook-sync',
+    path: '/api/public/cron/facebook-sync',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AppIndexRoute
@@ -66,6 +73,7 @@ export interface FileRoutesByFullPath {
   '/monthly': typeof AppMonthlyRoute
   '/profit': typeof AppProfitRoute
   '/settings': typeof AppSettingsRoute
+  '/api/public/cron/facebook-sync': typeof ApiPublicCronFacebookSyncRoute
 }
 export interface FileRoutesByTo {
   '/advisor': typeof AppAdvisorRoute
@@ -75,6 +83,7 @@ export interface FileRoutesByTo {
   '/profit': typeof AppProfitRoute
   '/settings': typeof AppSettingsRoute
   '/': typeof AppIndexRoute
+  '/api/public/cron/facebook-sync': typeof ApiPublicCronFacebookSyncRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -86,6 +95,7 @@ export interface FileRoutesById {
   '/_app/profit': typeof AppProfitRoute
   '/_app/settings': typeof AppSettingsRoute
   '/_app/': typeof AppIndexRoute
+  '/api/public/cron/facebook-sync': typeof ApiPublicCronFacebookSyncRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -97,6 +107,7 @@ export interface FileRouteTypes {
     | '/monthly'
     | '/profit'
     | '/settings'
+    | '/api/public/cron/facebook-sync'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/advisor'
@@ -106,6 +117,7 @@ export interface FileRouteTypes {
     | '/profit'
     | '/settings'
     | '/'
+    | '/api/public/cron/facebook-sync'
   id:
     | '__root__'
     | '/_app'
@@ -116,10 +128,12 @@ export interface FileRouteTypes {
     | '/_app/profit'
     | '/_app/settings'
     | '/_app/'
+    | '/api/public/cron/facebook-sync'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
+  ApiPublicCronFacebookSyncRoute: typeof ApiPublicCronFacebookSyncRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -180,6 +194,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppSettingsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/api/public/cron/facebook-sync': {
+      id: '/api/public/cron/facebook-sync'
+      path: '/api/public/cron/facebook-sync'
+      fullPath: '/api/public/cron/facebook-sync'
+      preLoaderRoute: typeof ApiPublicCronFacebookSyncRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -207,6 +228,7 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
+  ApiPublicCronFacebookSyncRoute: ApiPublicCronFacebookSyncRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
