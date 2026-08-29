@@ -401,6 +401,15 @@ export default function DailyData() {
   });
 
   const fetchRatesFn = useServerFn(getExchangeRates);
+
+  // Latest USD/EUR rates — refreshes every 5 minutes so displayed amounts stay current
+  const { data: latestRates } = useQuery({
+    queryKey: ["fx-latest"],
+    queryFn: async () =>
+      fetchRatesFn({ data: { date: new Date().toISOString().split("T")[0] } }),
+    refetchInterval: 5 * 60 * 1000,
+  });
+
   const fetchExchangeRates = async (date: string) => {
     setFetchingRates(true);
     try {
@@ -489,8 +498,12 @@ export default function DailyData() {
     const amountPerSale = price * (1 + gstRate);
 
     const inrRevenue = (platformQty + gpay) * amountPerSale;
-    const usdAmountInr = Number(sale?.usd_amount_inr ?? 0);
-    const eurAmountInr = Number(sale?.eur_amount_inr ?? 0);
+    const usdAmountInr = latestRates?.usd_to_inr
+      ? usdQty * 7 * latestRates.usd_to_inr
+      : Number(sale?.usd_amount_inr ?? 0);
+    const eurAmountInr = latestRates?.eur_to_inr
+      ? eurQty * 7 * latestRates.eur_to_inr
+      : Number(sale?.eur_amount_inr ?? 0);
     const totalRevenue = inrRevenue + usdAmountInr + eurAmountInr;
 
     const commission = platformQty * amountPerSale * COMMISSION_RATE;
@@ -514,12 +527,20 @@ export default function DailyData() {
     const totalGpay = reportSalesData.reduce((s, r) => s + (r.gpay_quantity ?? 0), 0);
     const totalUsd = reportSalesData.reduce((s, r) => s + (r.usd_quantity ?? 0), 0);
     const totalEur = reportSalesData.reduce((s, r) => s + (r.eur_quantity ?? 0), 0);
-    const totalRevenue = reportSalesData.reduce((s, r) => s + Number(r.total_amount), 0);
     const totalGST = reportSalesData.reduce((s, r) => s + Number(r.gst_collected), 0);
     const totalExpenses = reportExpensesData.reduce((s, r) => s + Number(r.amount), 0);
     const platformQty = totalSales - totalGpay - totalUsd - totalEur;
-    const usdAmountTotal = reportSalesData.reduce((s, r) => s + Number(r.usd_amount_inr ?? 0), 0);
-    const eurAmountTotal = reportSalesData.reduce((s, r) => s + Number(r.eur_amount_inr ?? 0), 0);
+    const usdAmountTotal = latestRates?.usd_to_inr
+      ? totalUsd * 7 * latestRates.usd_to_inr
+      : reportSalesData.reduce((s, r) => s + Number(r.usd_amount_inr ?? 0), 0);
+    const eurAmountTotal = latestRates?.eur_to_inr
+      ? totalEur * 7 * latestRates.eur_to_inr
+      : reportSalesData.reduce((s, r) => s + Number(r.eur_amount_inr ?? 0), 0);
+    const storedFxTotal = reportSalesData.reduce(
+      (s, r) => s + Number(r.usd_amount_inr ?? 0) + Number(r.eur_amount_inr ?? 0), 0);
+    const totalRevenue =
+      reportSalesData.reduce((s, r) => s + Number(r.total_amount), 0) -
+      storedFxTotal + usdAmountTotal + eurAmountTotal;
     const price = Number(productConfig?.price || 499);
     const gstRate = Number(productConfig?.gst_rate_percent || 18) / 100;
     const amountPerSale = price * (1 + gstRate);
