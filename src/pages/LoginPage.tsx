@@ -11,16 +11,26 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [mode, setMode] = useState<"login" | "signup">("login");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      toast.error(error.message);
+    if (mode === "signup") {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { emailRedirectTo: window.location.origin },
+      });
+      if (error) toast.error(error.message);
+      else toast.success("Account created — you're signed in.");
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) toast.error(error.message);
     }
     setLoading(false);
   };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
