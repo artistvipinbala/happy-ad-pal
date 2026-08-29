@@ -11,16 +11,26 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [mode, setMode] = useState<"login" | "signup">("login");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      toast.error(error.message);
+    if (mode === "signup") {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { emailRedirectTo: window.location.origin },
+      });
+      if (error) toast.error(error.message);
+      else toast.success("Account created — you're signed in.");
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) toast.error(error.message);
     }
     setLoading(false);
   };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4">
@@ -30,7 +40,9 @@ export default function LoginPage() {
             <Lock className="h-5 w-5 text-primary" />
           </div>
           <CardTitle className="text-xl">Ad Profit Portal</CardTitle>
-          <p className="text-sm text-muted-foreground">Login to continue</p>
+          <p className="text-sm text-muted-foreground">
+            {mode === "login" ? "Login to continue" : "Create your account"}
+          </p>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
@@ -40,12 +52,20 @@ export default function LoginPage() {
             </div>
             <div className="space-y-1">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Logging in..." : "Login"}
+              {loading ? "Please wait..." : mode === "login" ? "Login" : "Create account"}
             </Button>
+            <button
+              type="button"
+              className="w-full text-xs text-muted-foreground hover:text-foreground"
+              onClick={() => setMode(mode === "login" ? "signup" : "login")}
+            >
+              {mode === "login" ? "First time here? Create your account" : "Already have an account? Login"}
+            </button>
           </form>
+
         </CardContent>
       </Card>
     </div>

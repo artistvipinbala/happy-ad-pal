@@ -25,7 +25,6 @@ export type Database = {
           clicks: number
           conversions: number
           cpc: number
-          cpl: number
           cpr: number
           created_at: string
           ctr: number
@@ -38,7 +37,6 @@ export type Database = {
           ninety_five_percent_views: number
           reach: number
           spend: number
-          status: string | null
           three_second_views: number
         }
         Insert: {
@@ -51,11 +49,10 @@ export type Database = {
           clicks?: number
           conversions?: number
           cpc?: number
-          cpl?: number
           cpr?: number
           created_at?: string
           ctr?: number
-          date: string
+          date?: string
           fifty_percent_views?: number
           frequency?: number
           id?: string
@@ -64,7 +61,6 @@ export type Database = {
           ninety_five_percent_views?: number
           reach?: number
           spend?: number
-          status?: string | null
           three_second_views?: number
         }
         Update: {
@@ -77,7 +73,6 @@ export type Database = {
           clicks?: number
           conversions?: number
           cpc?: number
-          cpl?: number
           cpr?: number
           created_at?: string
           ctr?: number
@@ -90,7 +85,6 @@ export type Database = {
           ninety_five_percent_views?: number
           reach?: number
           spend?: number
-          status?: string | null
           three_second_views?: number
         }
         Relationships: []
@@ -114,7 +108,6 @@ export type Database = {
           ninety_five_percent_views: number
           reach: number
           three_second_views: number
-          updated_at: string
         }
         Insert: {
           ad_spend?: number
@@ -125,7 +118,7 @@ export type Database = {
           cpr?: number
           created_at?: string
           ctr?: number
-          date: string
+          date?: string
           fifty_percent_views?: number
           frequency?: number
           id?: string
@@ -134,7 +127,6 @@ export type Database = {
           ninety_five_percent_views?: number
           reach?: number
           three_second_views?: number
-          updated_at?: string
         }
         Update: {
           ad_spend?: number
@@ -154,7 +146,6 @@ export type Database = {
           ninety_five_percent_views?: number
           reach?: number
           three_second_views?: number
-          updated_at?: string
         }
         Relationships: []
       }
@@ -192,7 +183,7 @@ export type Database = {
           amount?: number
           category_id?: string | null
           created_at?: string
-          date: string
+          date?: string
           description?: string | null
           id?: string
         }
@@ -220,33 +211,27 @@ export type Database = {
           created_at: string
           id: string
           month: string
-          notes: string | null
           total_expenses: number | null
           total_revenue: number | null
           total_sales_count: number | null
-          updated_at: string
         }
         Insert: {
           ad_spend?: number | null
           created_at?: string
           id?: string
           month: string
-          notes?: string | null
           total_expenses?: number | null
           total_revenue?: number | null
           total_sales_count?: number | null
-          updated_at?: string
         }
         Update: {
           ad_spend?: number | null
           created_at?: string
           id?: string
           month?: string
-          notes?: string | null
           total_expenses?: number | null
           total_revenue?: number | null
           total_sales_count?: number | null
-          updated_at?: string
         }
         Relationships: []
       }
@@ -258,7 +243,6 @@ export type Database = {
           is_active: boolean
           price: number
           product_name: string
-          updated_at: string
         }
         Insert: {
           created_at?: string
@@ -267,7 +251,6 @@ export type Database = {
           is_active?: boolean
           price?: number
           product_name: string
-          updated_at?: string
         }
         Update: {
           created_at?: string
@@ -276,7 +259,6 @@ export type Database = {
           is_active?: boolean
           price?: number
           product_name?: string
-          updated_at?: string
         }
         Relationships: []
       }
@@ -301,7 +283,7 @@ export type Database = {
         Insert: {
           amount_per_sale?: number
           created_at?: string
-          date: string
+          date?: string
           eur_amount_inr?: number
           eur_quantity?: number
           eur_rate?: number
