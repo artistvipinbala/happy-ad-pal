@@ -152,16 +152,19 @@ export type Database = {
       expense_categories: {
         Row: {
           created_at: string
+          description: string | null
           id: string
           name: string
         }
         Insert: {
           created_at?: string
+          description?: string | null
           id?: string
           name: string
         }
         Update: {
           created_at?: string
+          description?: string | null
           id?: string
           name?: string
         }
@@ -204,31 +207,31 @@ export type Database = {
       }
       monthly_overrides: {
         Row: {
-          ad_spend: number
+          ad_spend: number | null
           created_at: string
           id: string
           month: string
-          total_expenses: number
-          total_revenue: number
-          total_sales_count: number
+          total_expenses: number | null
+          total_revenue: number | null
+          total_sales_count: number | null
         }
         Insert: {
-          ad_spend?: number
+          ad_spend?: number | null
           created_at?: string
           id?: string
           month: string
-          total_expenses?: number
-          total_revenue?: number
-          total_sales_count?: number
+          total_expenses?: number | null
+          total_revenue?: number | null
+          total_sales_count?: number | null
         }
         Update: {
-          ad_spend?: number
+          ad_spend?: number | null
           created_at?: string
           id?: string
           month?: string
-          total_expenses?: number
-          total_revenue?: number
-          total_sales_count?: number
+          total_expenses?: number | null
+          total_revenue?: number | null
+          total_sales_count?: number | null
         }
         Relationships: []
       }
