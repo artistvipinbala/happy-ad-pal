@@ -9,50 +9,204 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppRouteImport } from './routes/_app'
+import { Route as AppIndexRouteImport } from './routes/_app/index'
+import { Route as AppAdvisorRouteImport } from './routes/_app/advisor'
+import { Route as AppDailyRouteImport } from './routes/_app/daily'
+import { Route as AppExpensesRouteImport } from './routes/_app/expenses'
+import { Route as AppMonthlyRouteImport } from './routes/_app/monthly'
+import { Route as AppProfitRouteImport } from './routes/_app/profit'
+import { Route as AppSettingsRouteImport } from './routes/_app/settings'
 
-const IndexRoute = IndexRouteImport.update({
+const AppRoute = AppRouteImport.update({
+  id: '/_app',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAdvisorRoute = AppAdvisorRouteImport.update({
+  id: '/advisor',
+  path: '/advisor',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppDailyRoute = AppDailyRouteImport.update({
+  id: '/daily',
+  path: '/daily',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppExpensesRoute = AppExpensesRouteImport.update({
+  id: '/expenses',
+  path: '/expenses',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMonthlyRoute = AppMonthlyRouteImport.update({
+  id: '/monthly',
+  path: '/monthly',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProfitRoute = AppProfitRouteImport.update({
+  id: '/profit',
+  path: '/profit',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSettingsRoute = AppSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AppRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '/': typeof AppIndexRoute
+  '/advisor': typeof AppAdvisorRoute
+  '/daily': typeof AppDailyRoute
+  '/expenses': typeof AppExpensesRoute
+  '/monthly': typeof AppMonthlyRoute
+  '/profit': typeof AppProfitRoute
+  '/settings': typeof AppSettingsRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
+  '/advisor': typeof AppAdvisorRoute
+  '/daily': typeof AppDailyRoute
+  '/expenses': typeof AppExpensesRoute
+  '/monthly': typeof AppMonthlyRoute
+  '/profit': typeof AppProfitRoute
+  '/settings': typeof AppSettingsRoute
+  '/': typeof AppIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_app': typeof AppRouteWithChildren
+  '/_app/advisor': typeof AppAdvisorRoute
+  '/_app/daily': typeof AppDailyRoute
+  '/_app/expenses': typeof AppExpensesRoute
+  '/_app/monthly': typeof AppMonthlyRoute
+  '/_app/profit': typeof AppProfitRoute
+  '/_app/settings': typeof AppSettingsRoute
+  '/_app/': typeof AppIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/advisor'
+    | '/daily'
+    | '/expenses'
+    | '/monthly'
+    | '/profit'
+    | '/settings'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/advisor'
+    | '/daily'
+    | '/expenses'
+    | '/monthly'
+    | '/profit'
+    | '/settings'
+    | '/'
+  id:
+    | '__root__'
+    | '/_app'
+    | '/_app/advisor'
+    | '/_app/daily'
+    | '/_app/expenses'
+    | '/_app/monthly'
+    | '/_app/profit'
+    | '/_app/settings'
+    | '/_app/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
+    '/_app': {
+      id: '/_app'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_app/': {
+      id: '/_app/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/advisor': {
+      id: '/_app/advisor'
+      path: '/advisor'
+      fullPath: '/advisor'
+      preLoaderRoute: typeof AppAdvisorRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/daily': {
+      id: '/_app/daily'
+      path: '/daily'
+      fullPath: '/daily'
+      preLoaderRoute: typeof AppDailyRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/expenses': {
+      id: '/_app/expenses'
+      path: '/expenses'
+      fullPath: '/expenses'
+      preLoaderRoute: typeof AppExpensesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/monthly': {
+      id: '/_app/monthly'
+      path: '/monthly'
+      fullPath: '/monthly'
+      preLoaderRoute: typeof AppMonthlyRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/profit': {
+      id: '/_app/profit'
+      path: '/profit'
+      fullPath: '/profit'
+      preLoaderRoute: typeof AppProfitRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/settings': {
+      id: '/_app/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRoute
     }
   }
 }
 
+interface AppRouteChildren {
+  AppAdvisorRoute: typeof AppAdvisorRoute
+  AppDailyRoute: typeof AppDailyRoute
+  AppExpensesRoute: typeof AppExpensesRoute
+  AppMonthlyRoute: typeof AppMonthlyRoute
+  AppProfitRoute: typeof AppProfitRoute
+  AppSettingsRoute: typeof AppSettingsRoute
+  AppIndexRoute: typeof AppIndexRoute
+}
+
+const AppRouteChildren: AppRouteChildren = {
+  AppAdvisorRoute: AppAdvisorRoute,
+  AppDailyRoute: AppDailyRoute,
+  AppExpensesRoute: AppExpensesRoute,
+  AppMonthlyRoute: AppMonthlyRoute,
+  AppProfitRoute: AppProfitRoute,
+  AppSettingsRoute: AppSettingsRoute,
+  AppIndexRoute: AppIndexRoute,
+}
+
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  AppRoute: AppRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
