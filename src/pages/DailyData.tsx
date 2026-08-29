@@ -401,6 +401,15 @@ export default function DailyData() {
   });
 
   const fetchRatesFn = useServerFn(getExchangeRates);
+
+  // Latest USD/EUR rates — refreshes every 5 minutes so displayed amounts stay current
+  const { data: latestRates } = useQuery({
+    queryKey: ["fx-latest"],
+    queryFn: async () =>
+      fetchRatesFn({ data: { date: new Date().toISOString().split("T")[0] } }),
+    refetchInterval: 5 * 60 * 1000,
+  });
+
   const fetchExchangeRates = async (date: string) => {
     setFetchingRates(true);
     try {
