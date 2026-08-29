@@ -402,13 +402,16 @@ export default function DailyData() {
 
   const fetchRatesFn = useServerFn(getExchangeRates);
 
-  // Latest USD/EUR rates — refreshes every 5 minutes so displayed amounts stay current
+  // Latest USD/EUR rates — refreshes every 5 minutes, applied ONLY to today's row.
+  // Past days always use the rate stored at save/close so their profit stays fixed.
+  const todayStr = new Date().toISOString().split("T")[0]!;
   const { data: latestRates } = useQuery({
     queryKey: ["fx-latest"],
     queryFn: async () =>
-      fetchRatesFn({ data: { date: new Date().toISOString().split("T")[0] } }),
+      fetchRatesFn({ data: { date: todayStr } }),
     refetchInterval: 5 * 60 * 1000,
   });
+  const liveRatesFor = (date: string) => (date === todayStr ? latestRates : undefined);
 
   const fetchExchangeRates = async (date: string) => {
     setFetchingRates(true);
@@ -498,11 +501,12 @@ export default function DailyData() {
     const amountPerSale = price * (1 + gstRate);
 
     const inrRevenue = (platformQty + gpay) * amountPerSale;
-    const usdAmountInr = latestRates?.usd_to_inr
-      ? usdQty * 7 * latestRates.usd_to_inr
+    const dayRates = liveRatesFor(adRow.date);
+    const usdAmountInr = dayRates?.usd_to_inr
+      ? usdQty * 7 * dayRates.usd_to_inr
       : Number(sale?.usd_amount_inr ?? 0);
-    const eurAmountInr = latestRates?.eur_to_inr
-      ? eurQty * 7 * latestRates.eur_to_inr
+    const eurAmountInr = dayRates?.eur_to_inr
+      ? eurQty * 7 * dayRates.eur_to_inr
       : Number(sale?.eur_amount_inr ?? 0);
     const totalRevenue = inrRevenue + usdAmountInr + eurAmountInr;
 
