@@ -498,8 +498,12 @@ export default function DailyData() {
     const amountPerSale = price * (1 + gstRate);
 
     const inrRevenue = (platformQty + gpay) * amountPerSale;
-    const usdAmountInr = Number(sale?.usd_amount_inr ?? 0);
-    const eurAmountInr = Number(sale?.eur_amount_inr ?? 0);
+    const usdAmountInr = latestRates?.usd_to_inr
+      ? usdQty * 7 * latestRates.usd_to_inr
+      : Number(sale?.usd_amount_inr ?? 0);
+    const eurAmountInr = latestRates?.eur_to_inr
+      ? eurQty * 7 * latestRates.eur_to_inr
+      : Number(sale?.eur_amount_inr ?? 0);
     const totalRevenue = inrRevenue + usdAmountInr + eurAmountInr;
 
     const commission = platformQty * amountPerSale * COMMISSION_RATE;
