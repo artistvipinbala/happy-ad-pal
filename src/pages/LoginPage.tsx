@@ -40,7 +40,9 @@ export default function LoginPage() {
             <Lock className="h-5 w-5 text-primary" />
           </div>
           <CardTitle className="text-xl">Ad Profit Portal</CardTitle>
-          <p className="text-sm text-muted-foreground">Login to continue</p>
+          <p className="text-sm text-muted-foreground">
+            {mode === "login" ? "Login to continue" : "Create your account"}
+          </p>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleLogin} className="space-y-4">
@@ -50,12 +52,20 @@ export default function LoginPage() {
             </div>
             <div className="space-y-1">
               <Label htmlFor="password">Password</Label>
-              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+              <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={6} />
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Logging in..." : "Login"}
+              {loading ? "Please wait..." : mode === "login" ? "Login" : "Create account"}
             </Button>
+            <button
+              type="button"
+              className="w-full text-xs text-muted-foreground hover:text-foreground"
+              onClick={() => setMode(mode === "login" ? "signup" : "login")}
+            >
+              {mode === "login" ? "First time here? Create your account" : "Already have an account? Login"}
+            </button>
           </form>
+
         </CardContent>
       </Card>
     </div>
