@@ -399,13 +399,11 @@ export default function DailyData() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const fetchRatesFn = useServerFn(getExchangeRates);
   const fetchExchangeRates = async (date: string) => {
     setFetchingRates(true);
     try {
-      const { data, error } = await supabase.functions.invoke("get-exchange-rates", {
-        body: { date },
-      });
-      if (error) throw error;
+      const data = await fetchRatesFn({ data: { date } });
       setUsdRate(data.usd_to_inr || 0);
       setEurRate(data.eur_to_inr || 0);
     } catch (e: any) {
