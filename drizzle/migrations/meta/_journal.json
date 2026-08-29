@@ -29,6 +29,13 @@
       "when": 1787995794572,
       "tag": "0003_create_exchange_rates",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1787999437349,
+      "tag": "0004_facebook_sync_every_5_minutes",
+      "breakpoints": true
     }
   ]
 }
