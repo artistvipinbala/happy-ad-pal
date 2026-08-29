@@ -1,5 +1,13 @@
 {
   "version": "7",
   "dialect": "postgresql",
-  "entries": []
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1787985581076,
+      "tag": "0000_create_ad_profit_schema",
+      "breakpoints": true
+    }
+  ]
 }
