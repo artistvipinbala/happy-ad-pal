@@ -240,7 +240,7 @@ export default function DailyData() {
       const { data } = await supabase.from("ad_daily_data").select("*").order("date", { ascending: false });
       return data ?? [];
     },
-    refetchInterval: 10 * 60 * 1000, // Auto-refresh every 10 minutes
+    refetchInterval: 5 * 60 * 1000, // Auto-refresh every 5 minutes
   });
 
   const { data: salesData } = useQuery({
@@ -249,7 +249,7 @@ export default function DailyData() {
       const { data } = await supabase.from("sales_entries").select("*");
       return data ?? [];
     },
-    refetchInterval: 10 * 60 * 1000,
+    refetchInterval: 5 * 60 * 1000,
   });
 
   const { data: expensesData } = useQuery({
@@ -258,7 +258,7 @@ export default function DailyData() {
       const { data } = await supabase.from("expenses").select("*");
       return data ?? [];
     },
-    refetchInterval: 10 * 60 * 1000,
+    refetchInterval: 5 * 60 * 1000,
   });
 
   const { data: breakdownData } = useQuery({
@@ -267,7 +267,7 @@ export default function DailyData() {
       const { data } = await supabase.from("ad_breakdown").select("*").order("date", { ascending: false });
       return data ?? [];
     },
-    refetchInterval: 10 * 60 * 1000,
+    refetchInterval: 5 * 60 * 1000,
   });
 
   const [expandedDates, setExpandedDates] = useState<Set<string>>(new Set());
