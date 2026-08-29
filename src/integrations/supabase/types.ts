@@ -167,6 +167,27 @@ export type Database = {
         }
         Relationships: []
       }
+      exchange_rates: {
+        Row: {
+          created_at: string
+          date: string
+          eur_to_inr: number
+          usd_to_inr: number
+        }
+        Insert: {
+          created_at?: string
+          date: string
+          eur_to_inr: number
+          usd_to_inr: number
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          eur_to_inr?: number
+          usd_to_inr?: number
+        }
+        Relationships: []
+      }
       expense_categories: {
         Row: {
           created_at: string

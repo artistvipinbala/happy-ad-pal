@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { syncFacebookAds } from "@/lib/facebook.functions";
+import { getExchangeRates } from "@/lib/exchange.functions";
 import { supabase } from "@/integrations/supabase/client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -399,13 +400,11 @@ export default function DailyData() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const fetchRatesFn = useServerFn(getExchangeRates);
   const fetchExchangeRates = async (date: string) => {
     setFetchingRates(true);
     try {
-      const { data, error } = await supabase.functions.invoke("get-exchange-rates", {
-        body: { date },
-      });
-      if (error) throw error;
+      const data = await fetchRatesFn({ data: { date } });
       setUsdRate(data.usd_to_inr || 0);
       setEurRate(data.eur_to_inr || 0);
     } catch (e: any) {
