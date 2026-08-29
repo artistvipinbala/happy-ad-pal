@@ -534,12 +534,20 @@ export default function DailyData() {
     const totalGST = reportSalesData.reduce((s, r) => s + Number(r.gst_collected), 0);
     const totalExpenses = reportExpensesData.reduce((s, r) => s + Number(r.amount), 0);
     const platformQty = totalSales - totalGpay - totalUsd - totalEur;
-    const usdAmountTotal = latestRates?.usd_to_inr
-      ? totalUsd * 7 * latestRates.usd_to_inr
-      : reportSalesData.reduce((s, r) => s + Number(r.usd_amount_inr ?? 0), 0);
-    const eurAmountTotal = latestRates?.eur_to_inr
-      ? totalEur * 7 * latestRates.eur_to_inr
-      : reportSalesData.reduce((s, r) => s + Number(r.eur_amount_inr ?? 0), 0);
+    // Live FX rate applies only to today's row; past days use their stored amounts.
+    const todaySale = reportSalesData.find((r) => r.date === todayStr);
+    const pastUsdTotal = reportSalesData.reduce(
+      (s, r) => (r.date === todayStr ? s : s + Number(r.usd_amount_inr ?? 0)), 0);
+    const pastEurTotal = reportSalesData.reduce(
+      (s, r) => (r.date === todayStr ? s : s + Number(r.eur_amount_inr ?? 0)), 0);
+    const todayUsdTotal = latestRates?.usd_to_inr
+      ? (todaySale?.usd_quantity ?? 0) * 7 * latestRates.usd_to_inr
+      : Number(todaySale?.usd_amount_inr ?? 0);
+    const todayEurTotal = latestRates?.eur_to_inr
+      ? (todaySale?.eur_quantity ?? 0) * 7 * latestRates.eur_to_inr
+      : Number(todaySale?.eur_amount_inr ?? 0);
+    const usdAmountTotal = pastUsdTotal + todayUsdTotal;
+    const eurAmountTotal = pastEurTotal + todayEurTotal;
     const storedFxTotal = reportSalesData.reduce(
       (s, r) => s + Number(r.usd_amount_inr ?? 0) + Number(r.eur_amount_inr ?? 0), 0);
     const totalRevenue =
