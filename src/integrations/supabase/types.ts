@@ -149,6 +149,24 @@ export type Database = {
         }
         Relationships: []
       }
+      app_cron_config: {
+        Row: {
+          created_at: string
+          id: string
+          token: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          token?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          token?: string
+        }
+        Relationships: []
+      }
       expense_categories: {
         Row: {
           created_at: string

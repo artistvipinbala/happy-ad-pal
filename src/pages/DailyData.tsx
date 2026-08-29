@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { syncFacebookAds } from "@/lib/facebook.functions";
 import { supabase } from "@/integrations/supabase/client";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -204,23 +207,12 @@ export default function DailyData() {
     },
   });
 
+  const runSync = useServerFn(syncFacebookAds);
+
   const handleSync = async () => {
     setSyncing(true);
     try {
-      // Sync last 30 days to catch all missing data
-      const now = new Date();
-      const today = new Date(now.getTime() - now.getTimezoneOffset() * 60_000)
-        .toISOString()
-        .split("T")[0];
-      const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000 - now.getTimezoneOffset() * 60_000)
-        .toISOString()
-        .split("T")[0];
-
-      const { data, error } = await supabase.functions.invoke("sync-facebook-ads", {
-        body: { since: monthAgo, until: today },
-      });
-
-      if (error) throw error;
+      const data = await runSync({ data: { days: 30 } });
 
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ["ad-daily"] }),
@@ -228,10 +220,10 @@ export default function DailyData() {
         queryClient.invalidateQueries({ queryKey: ["ad-breakdown"] }),
       ]);
 
-      if (data?.synced > 0 || data?.breakdown_synced > 0) {
+      if (data.synced > 0 || data.breakdown_synced > 0) {
         toast.success(`Synced! Account: ${data.synced} days, Campaigns: ${data.breakdown_synced} entries`);
       } else {
-        toast.info(data?.message || "No new data found");
+        toast.info("No new data found");
       }
     } catch (e: any) {
       toast.error(e.message || "Sync failed");
@@ -239,6 +231,7 @@ export default function DailyData() {
       setSyncing(false);
     }
   };
+
 
   const { data: rows, isLoading } = useQuery({
     queryKey: ["ad-daily"],

@@ -142,12 +142,16 @@ export default function SettingsPage() {
         </CardHeader>
         <CardContent>
           <p className="text-sm text-muted-foreground mb-3">
-            Facebook Marketing API connect ചെയ്ത് automatic ആയി ad data fetch ചെയ്യാൻ, Settings-ൽ Facebook Access Token & Ad Account ID add ചെയ്യണം.
+            Facebook Marketing API connect ചെയ്തിട്ടുണ്ട്. Access Token & Ad Account ID backend-ൽ സുരക്ഷിതമായി സൂക്ഷിച്ചിരിക്കുന്നു.
           </p>
-          <p className="text-xs text-muted-foreground">
-            Coming soon — edge function setup required. ഇപ്പോൾ Daily Data page-ൽ manually add ചെയ്യാം.
-          </p>
+          <ul className="text-xs text-muted-foreground list-disc pl-4 space-y-1">
+            <li>ഓരോ 15 മിനിറ്റിലും ഇന്നത്തെ ഡാറ്റ automatic ആയി update ആകും</li>
+            <li>ദിവസവും പുലർച്ചെ 7:00 (IST) കഴിഞ്ഞ 30 ദിവസത്തെ ഡാറ്റ recheck ചെയ്യും</li>
+            <li>Daily Data page-ലെ "Sync FB Ads" ബട്ടൺ ഉപയോഗിച്ച് എപ്പോൾ വേണമെങ്കിലും manual sync ചെയ്യാം</li>
+            <li>Manually edit ചെയ്ത ദിവസങ്ങൾ automatic sync overwrite ചെയ്യില്ല</li>
+          </ul>
         </CardContent>
+
       </Card>
     </div>
   );
