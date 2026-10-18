@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Calculate payment fees through `src/lib/payment-fees.ts` per dated sales row using its recorded sale amount and channel counts; shared rules prevent report drift and preserve historical pricing/FX.
