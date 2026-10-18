@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { syncFacebookAds } from "@/lib/facebook.functions";
 import { getExchangeRates } from "@/lib/exchange.functions";
+import { paymentFees } from "@/lib/payment-fees";
 import { supabase } from "@/integrations/supabase/client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,7 +24,6 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 const PRICE_PER_SALE = 589;
-const COMMISSION_RATE = 0.025;
 
 const defaultRow = {
   date: new Date().toISOString().split("T")[0]!,
@@ -498,7 +498,7 @@ export default function DailyData() {
 
     const price = Number(productConfig?.price || 499);
     const gstRate = Number(productConfig?.gst_rate_percent || 18) / 100;
-    const amountPerSale = price * (1 + gstRate);
+    const amountPerSale = Number(sale?.amount_per_sale ?? price * (1 + gstRate));
 
     const inrRevenue = (platformQty + gpay) * amountPerSale;
     const dayRates = liveRatesFor(adRow.date);
@@ -510,10 +510,7 @@ export default function DailyData() {
       : Number(sale?.eur_amount_inr ?? 0);
     const totalRevenue = inrRevenue + usdAmountInr + eurAmountInr;
 
-    const commission = platformQty * amountPerSale * COMMISSION_RATE;
-    const usdCommission = usdAmountInr * COMMISSION_RATE;
-    const eurCommission = eurAmountInr * COMMISSION_RATE;
-    const totalCommission = commission + usdCommission + eurCommission;
+    const totalCommission = sale ? paymentFees(sale, usdAmountInr, eurAmountInr).total : 0;
 
     const gstCollected = Number(sale?.gst_collected ?? 0);
     const gstPayable = gstCollected - adGst;
@@ -556,7 +553,12 @@ export default function DailyData() {
     const price = Number(productConfig?.price || 499);
     const gstRate = Number(productConfig?.gst_rate_percent || 18) / 100;
     const amountPerSale = price * (1 + gstRate);
-    const commission = platformQty * amountPerSale * COMMISSION_RATE + (usdAmountTotal + eurAmountTotal) * COMMISSION_RATE;
+    const commission = reportSalesData.reduce((sum, sale) => {
+      const rates = liveRatesFor(sale.date);
+      const usd = rates?.usd_to_inr ? (sale.usd_quantity ?? 0) * 7 * rates.usd_to_inr : Number(sale.usd_amount_inr ?? 0);
+      const eur = rates?.eur_to_inr ? (sale.eur_quantity ?? 0) * 7 * rates.eur_to_inr : Number(sale.eur_amount_inr ?? 0);
+      return sum + paymentFees(sale, usd, eur).total;
+    }, 0);
     const gstPayable = totalGST - adGst;
     const profit = totalRevenue - commission - totalSpendWithGst - totalExpenses - gstPayable;
     const roas = totalSpendWithGst > 0 ? totalRevenue / totalSpendWithGst : 0;

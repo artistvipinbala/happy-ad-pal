@@ -3,6 +3,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { formatINR } from "@/lib/format";
 import { ChevronDown, Calculator } from "lucide-react";
 import { useState } from "react";
+import { INTERNATIONAL_RATE } from "@/lib/payment-fees";
 
 interface ProfitBreakdownProps {
   totalRevenue: number;
@@ -24,7 +25,7 @@ interface ProfitBreakdownProps {
   netProfit: number;
   price: number;
   gstRate: number;
-  commissionRate: number;
+  domesticCommission: number;
 }
 
 export default function ProfitBreakdown({
@@ -47,7 +48,7 @@ export default function ProfitBreakdown({
   netProfit,
   price,
   gstRate,
-  commissionRate,
+  domesticCommission,
 }: ProfitBreakdownProps) {
   const [open, setOpen] = useState(false);
 
@@ -85,13 +86,13 @@ export default function ProfitBreakdown({
             <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4 space-y-2">
               <h3 className="font-bold text-amber-600 flex items-center gap-1">🏦 Step 2: How much COMMISSION does the platform take?</h3>
               <p className="text-muted-foreground text-xs">
-                The payment platform charges {(commissionRate * 100)}% on each sale. But GPay payments have NO commission! 🎉
+                Domestic platform purchases: 3.5% from October 2026; earlier purchases: 2.5%. International purchases: 5% for all dates. Direct GPay: 0%.
               </p>
               <div className="bg-background/50 rounded p-3 space-y-1 text-xs font-mono">
-                <div>Platform sales (charged {(commissionRate * 100)}%): <strong>{platformCount}</strong> sales</div>
-                <div>→ {platformCount} × {formatINR(amountPerSale)} × {(commissionRate * 100)}% = {formatINR(platformCount * amountPerSale * commissionRate)}</div>
+                <div>Domestic platform sales: <strong>{platformCount}</strong> sales</div>
+                <div>→ Domestic commission (sale-date rates) = {formatINR(domesticCommission)}</div>
                 {(usdAmountTotal + eurAmountTotal) > 0 && (
-                  <div>→ International commission: ({formatINR(usdAmountTotal)} + {formatINR(eurAmountTotal)}) × {(commissionRate * 100)}% = {formatINR((usdAmountTotal + eurAmountTotal) * commissionRate)}</div>
+                  <div>→ International commission: ({formatINR(usdAmountTotal)} + {formatINR(eurAmountTotal)}) × 5% = {formatINR((usdAmountTotal + eurAmountTotal) * INTERNATIONAL_RATE)}</div>
                 )}
                 <div>GPay sales (FREE! No commission): <strong>{totalGpayCount}</strong> sales = ₹0</div>
                 <div className="border-t border-border pt-1 mt-1 text-amber-600 font-bold">

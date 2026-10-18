@@ -14,8 +14,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import ProfitBreakdown from "@/components/ProfitBreakdown";
-
-const COMMISSION_RATE = 0.025;
+import { paymentFees, domesticRateForDate, INTERNATIONAL_RATE } from "@/lib/payment-fees";
 
 export default function MonthlyOverview() {
   const queryClient = useQueryClient();
@@ -434,7 +433,12 @@ export default function MonthlyOverview() {
 
     const adGst = adSpendRaw * 0.18;
     const spendWithGst = adSpendRaw + adGst;
-    const commissionDeduction = Math.max(0, platformCount) * amountPerSale * COMMISSION_RATE + (usdAmountTotal + eurAmountTotal) * COMMISSION_RATE;
+    const recordedDomesticCommission = monthSales.reduce((sum, sale) => sum + paymentFees(sale).domestic, 0);
+    // A manual count override has no individual transactions; retain its existing price-based estimate.
+    const domesticCommission = override?.total_sales_count != null
+      ? Math.max(0, platformCount) * amountPerSale * domesticRateForDate(`${m.month}-01`)
+      : recordedDomesticCommission;
+    const commissionDeduction = domesticCommission + (usdAmountTotal + eurAmountTotal) * INTERNATIONAL_RATE;
     const gstPayable = totalGST - adGst;
     const netProfit = totalRevenue - commissionDeduction - spendWithGst - totalExpenses - gstPayable;
     const roas = spendWithGst > 0 ? totalRevenue / spendWithGst : 0;
@@ -443,7 +447,7 @@ export default function MonthlyOverview() {
       ...m, ad_spend: adSpendRaw,
       totalSalesCount, totalGpayCount, totalUsdCount, totalEurCount, platformCount,
       totalRevenue, totalGST, usdAmountTotal, eurAmountTotal, totalExpenses,
-      adGst, spendWithGst, commissionDeduction, gstPayable, netProfit, roas,
+      adGst, spendWithGst, commissionDeduction, domesticCommission, gstPayable, netProfit, roas,
       monthSales, monthExpenses, monthAdData,
       hasOverride: !!override,
     };
@@ -557,7 +561,7 @@ export default function MonthlyOverview() {
         netProfit={allTimeNetProfit}
         price={price}
         gstRate={gstRate}
-        commissionRate={COMMISSION_RATE}
+        domesticCommission={monthlyPL.reduce((sum, month) => sum + month.domesticCommission, 0)}
       />
 
       {/* Monthly P&L Table with Edit */}
