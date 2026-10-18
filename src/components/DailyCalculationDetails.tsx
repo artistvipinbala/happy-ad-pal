@@ -25,7 +25,7 @@ type Props = {
   adMetrics: { impressions: number; clicks: number; ctr: number; cpc: number; reach: number; frequency: number };
 };
 
-function Step({ title, lines, result }: { title: string; lines: string[]; result?: string }) {
+function Step({ title, lines, result }: { title: string; lines: string[]; result?: string | undefined }) {
   return (
     <section className="border-b border-border py-4 last:border-0">
       <h3 className="mb-2 text-sm font-semibold">{title}</h3>
