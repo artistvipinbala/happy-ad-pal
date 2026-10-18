@@ -4,5 +4,5 @@
 - [x] Verify concrete fee rules with tests and signed-in report views.
 
 # Daily calculation audit
-- [ ] Add an eye icon at the top of each day with a read-only, step-by-step calculation breakdown.
-- [ ] Verify displayed calculations against a real day's results and check narrow-screen layout.
+- [x] Add an eye icon at the top of each day with a read-only, step-by-step calculation breakdown.
+- [x] Verify displayed calculations against a real day's results and check narrow-screen layout.
