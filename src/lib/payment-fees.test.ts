@@ -1,5 +1,8 @@
-import { describe, expect, test } from "bun:test";
+import { describe, test } from "node:test";
+import { strict as assert } from "node:assert";
 import { paymentFees } from "./payment-fees";
+
+const expect = (actual: number) => ({ toBe: (expected: number) => assert.equal(actual, expected) });
 
 const sale = { date: "2026-10-01", quantity: 1, amount_per_sale: 1000 };
 
