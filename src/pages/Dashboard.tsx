@@ -13,8 +13,7 @@ import {
 import { TrendingUp, TrendingDown, IndianRupee, ShoppingCart, Target, Percent, Wallet, CreditCard } from "lucide-react";
 import { toast } from "sonner";
 import ProfitBreakdown from "@/components/ProfitBreakdown";
-
-const COMMISSION_RATE = 0.025; // 2.5%
+import { paymentFees, CURRENT_DOMESTIC_RATE } from "@/lib/payment-fees";
 
 export default function Dashboard() {
   const queryClient = useQueryClient();
@@ -123,7 +122,8 @@ export default function Dashboard() {
   const price = Number(productConfig?.price || 499);
   const gstRate = Number(productConfig?.gst_rate_percent || 18) / 100;
   const amountPerSale = price * (1 + gstRate);
-  const commissionDeduction = platformCount * amountPerSale * COMMISSION_RATE + (usdAmountTotal + eurAmountTotal) * COMMISSION_RATE;
+  const commissionDeduction = reportSalesData.reduce((sum, sale) => sum + paymentFees(sale).total, 0);
+  const domesticCommission = reportSalesData.reduce((sum, sale) => sum + paymentFees(sale).domestic, 0);
   const totalIncome = totalRevenue;
   const gstPayable = totalGST - adGst; // GST collected minus input credit from ads
   const netProfit = totalIncome - commissionDeduction - totalSpendWithGst - totalExpenses - gstPayable;
@@ -151,7 +151,7 @@ export default function Dashboard() {
     const dayPlatformQty = daySalesQty - dayGpayQty - dayUsdQty - dayEurQty;
     const dayUsdInr = daySales.reduce((sum, row) => sum + Number(row.usd_amount_inr ?? 0), 0);
     const dayEurInr = daySales.reduce((sum, row) => sum + Number(row.eur_amount_inr ?? 0), 0);
-    const dayCommission = dayPlatformQty * amountPerSale * COMMISSION_RATE + (dayUsdInr + dayEurInr) * COMMISSION_RATE;
+    const dayCommission = daySales.reduce((sum, sale) => sum + paymentFees(sale).total, 0);
     const daySpend = dayAd ? Number(dayAd.ad_spend) : 0;
     const dayAdGst = daySpend * 0.18;
     const daySpendWithGst = daySpend + dayAdGst;
@@ -292,7 +292,7 @@ export default function Dashboard() {
         netProfit={netProfit}
         price={price}
         gstRate={gstRate}
-        commissionRate={COMMISSION_RATE}
+        domesticCommission={domesticCommission}
       />
 
       {/* Edit Sales Dialog */}
@@ -321,7 +321,7 @@ export default function Dashboard() {
                 onChange={(e) => setEditGpay(e.target.value)}
                 className="h-8 text-sm"
               />
-              <p className="text-[10px] text-muted-foreground">No 2.5% commission on GPay payments</p>
+              <p className="text-[10px] text-muted-foreground">No commission on direct GPay payments</p>
             </div>
             {editTotal && Number(editTotal) > 0 && (
               <div className="bg-muted/50 rounded-md p-3 text-xs space-y-1">
@@ -330,8 +330,8 @@ export default function Dashboard() {
                   <span className="font-semibold">{formatINR(Number(editTotal) * amountPerSale)}</span>
                 </div>
                 <div className="flex justify-between text-muted-foreground">
-                  <span>Platform ({Number(editTotal) - Number(editGpay || 0)}) × 2.5%</span>
-                  <span>-{formatINR((Number(editTotal) - Number(editGpay || 0)) * amountPerSale * COMMISSION_RATE)}</span>
+                  <span>Platform ({Number(editTotal) - Number(editGpay || 0)}) × 3.5%</span>
+                  <span>-{formatINR((Number(editTotal) - Number(editGpay || 0)) * amountPerSale * CURRENT_DOMESTIC_RATE)}</span>
                 </div>
                 <div className="flex justify-between text-muted-foreground">
                   <span>GPay ({Number(editGpay || 0)}) — no commission</span>
