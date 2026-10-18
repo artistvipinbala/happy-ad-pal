@@ -67,7 +67,7 @@ export function DailyCalculationDetails({ date, metrics: m, hasSales, usdRate, e
           <DialogDescription>എത്ര കിട്ടി, എത്ര ചെലവായി, എത്ര ബാക്കി?</DialogDescription>
         </DialogHeader>
         <div className="min-h-0 overflow-y-auto px-5 pb-3">
-          {!hasSales && <p className="mt-3 text-sm text-warning">വिल्प്പന ചേർത്തിട്ടില്ല — revenue, commission, GST = 0.</p>}
+          {!hasSales && <p className="mt-3 text-sm text-warning">വിൽപ്പന ചേർത്തിട്ടില്ല — revenue, commission, GST = 0.</p>}
           <Step title="1. രൂപയിൽ എത്ര കിട്ടി?" lines={[
             `${m.qty} പേർ വാങ്ങി: GPay ${m.gpay}, ഡോളർ ${m.usdQty}, യൂറോ ${m.eurQty}, platform ${m.platformQty}.`,
             `ഒരാളുടെ വില ${money(m.amountPerSale)}${hasSales ? "" : " (settings-ലെ വില)"}.`,
