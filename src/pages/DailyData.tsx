@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { syncFacebookAds } from "@/lib/facebook.functions";
 import { getExchangeRates } from "@/lib/exchange.functions";
 import { paymentFees } from "@/lib/payment-fees";
+import { DailyCalculationDetails } from "@/components/DailyCalculationDetails";
 import { supabase } from "@/integrations/supabase/client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -510,14 +511,15 @@ export default function DailyData() {
       : Number(sale?.eur_amount_inr ?? 0);
     const totalRevenue = inrRevenue + usdAmountInr + eurAmountInr;
 
-    const totalCommission = sale ? paymentFees(sale, usdAmountInr, eurAmountInr).total : 0;
+    const fees = sale ? paymentFees(sale, usdAmountInr, eurAmountInr) : { domestic: 0, international: 0, total: 0 };
+    const totalCommission = fees.total;
 
     const gstCollected = Number(sale?.gst_collected ?? 0);
     const gstPayable = gstCollected - adGst;
     const profit = totalRevenue - totalCommission - spendWithGst - expenses - gstPayable;
     const cac = qty > 0 ? spendWithGst / qty : 0;
 
-    return { qty, gpay, usdQty, eurQty, totalRevenue, totalCommission, gst: gstCollected, gstPayable, profit, cac, spend: spendWithGst, usdAmountInr, eurAmountInr };
+    return { qty, gpay, usdQty, eurQty, platformQty, amountPerSale, inrRevenue, rawSpend: spend, adGst, expenses, domesticCommission: fees.domestic, internationalCommission: fees.international, totalRevenue, totalCommission, gst: gstCollected, gstPayable, profit, cac, spend: spendWithGst, usdAmountInr, eurAmountInr };
   };
 
   const yearlyTotals = (() => {
@@ -711,6 +713,17 @@ export default function DailyData() {
                     )}
                   </div>
                   <div className="flex items-center gap-1.5">
+                    <DailyCalculationDetails
+                      date={r.date}
+                      metrics={m}
+                      hasSales={Boolean(sale)}
+                      usdRate={Number(liveRatesFor(r.date)?.usd_to_inr || sale?.usd_rate || 0)}
+                      eurRate={Number(liveRatesFor(r.date)?.eur_to_inr || sale?.eur_rate || 0)}
+                      liveUsd={Boolean(liveRatesFor(r.date)?.usd_to_inr)}
+                      liveEur={Boolean(liveRatesFor(r.date)?.eur_to_inr)}
+                      expenses={(expensesData ?? []).filter((e) => e.date === r.date).map((e) => ({ id: e.id, amount: Number(e.amount), description: e.description }))}
+                      adMetrics={{ impressions: r.impressions, clicks: r.clicks, ctr: Number(r.ctr), cpc: Number(r.cpc), reach: r.reach, frequency: Number(r.frequency) }}
+                    />
                     <Button variant="outline" size="sm" className="h-7 text-xs gap-1" onClick={() => openSalesDialog(r.date)}>
                       <ShoppingCart className="h-3 w-3" /> Sales
                     </Button>
