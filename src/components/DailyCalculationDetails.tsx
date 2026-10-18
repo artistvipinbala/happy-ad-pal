@@ -106,7 +106,7 @@ export function DailyCalculationDetails({ date, metrics: m, hasSales, usdRate, e
               : `− GST ${money(m.gstPayable)} = ${money(m.profit)}`,
           ]} result={m.profit >= 0 ? `ലാഭം = ${money(m.profit)}` : `നഷ്ടം = ${money(Math.abs(m.profit))}`} />
           <Step title="9. ഒരാളെ വാങ്ങിപ്പിക്കാൻ ചെലവ് (CAC)" lines={[
-            m.qty > 0 ? [`${money(m.spend)} ÷ ${m.qty} പേർ`] : ["ആരും വാങ്ങിയില്ല — ഇപ്പോൾ പറയാനാവില്ല."],
+            ...(m.qty > 0 ? [`${money(m.spend)} ÷ ${m.qty} പേർ`] : ["ആരും വാങ്ങിയില്ല — ഇപ്പോൾ പറയാനാവില്ല."]),
           ]} result={m.qty > 0 ? `CAC = ${money(m.cac)}` : undefined} />
           <Step title="10. പരസ്യത്തിന്റെ വിവരങ്ങൾ" lines={[
             "Facebook-ൽ നിന്നുള്ളത് — പുതിയ കണക്കില്ല.",
