@@ -10,3 +10,4 @@
 <!-- LOVABLE:END -->
 
 - Calculate payment fees through `src/lib/payment-fees.ts` per dated sales row using its recorded sale amount and channel counts; shared rules prevent report drift and preserve historical pricing/FX.
+- Daily calculation details consume the daily card's computed metrics and recorded inputs in a read-only dialog; this keeps audit results aligned without introducing separate business logic.
